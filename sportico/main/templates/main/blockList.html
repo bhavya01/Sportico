@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+
+<div class="card card-3">
+    <div class="title"> 
+        Blocked Users
+    </div>
+    {% if blockedUsers %} 
+    <div class = "userBlockList">
+        <table class='table table-bordered table-hover table-striped display' id='example'>
+            <thead>
+                <tr>
+                    <th style='width:300px;text-align:center;'>UserId</th>
+                    <th style='width:100px;text-align:center;'>Block/Unblock</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in blockedUsers %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ user.uid2.username }} </td>
+                    <td class ="tableEntry"><button class = "btn btn-danger" id="toggleBlock" onclick="toggleBlock('{{ user.uid2 }}')">UnBlock
+                    </button>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:300px;text-align:center;'>UserId</th>
+                    <th style='width:100px;text-align:center;'>Block/Unblock</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+        <div class="cardContent">
+            You have not blocked any users
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,436 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+<head>
+{{form.media}}
+</head>
+
+<div class = "addSport">
+    <button class = "btn btn-primary btn-lg buttonClass pull-right" data-toggle="modal" data-target="#addEvent"> Add Event </button>
+</div>
+
+<div class="modal fade" id="addEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">  
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalHeader"><strong>ADD EVENT</strong></h4>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="closeModal">Close</button>
+            </div>
+             
+            <div class="modal-body clearfix">
+                <div class="col-sm-12 " align="center">
+                    <div class="form">
+                        <form method="post" action="/addEvent/" id="add-event">{% csrf_token %}
+                            <table class="tableForm">
+                                <tr>
+                                    <td class="user-field">{{ form.sportName.label_tag }}</td>
+                                    <td class="user-field">{{ form.sportName }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.description.label_tag }}</td>
+                                    <td class="user-field" colspan='2'>{{ form.description }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.locationName.label_tag }}</td>
+                                    <td class="user-field">{{ form.locationName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.maxParticipants.label_tag }}</td>
+                                    <td class="user-field">{{ form.maxParticipants }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.startTime.label_tag }}</td>
+                                    <td class="user-field startTimeChallenge">{{ form.startTime }}</td>
+                                    <td class="user-field startDateChallenge">{{ form.startDate }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.endTime.label_tag }}</td>
+                                    <td class="user-field endTimeChallenge">{{ form.endTime }}</td>
+                                    <td class="user-field endDateChallenge">{{ form.endDate }}</td>
+                                </tr>
+                            </table>
+
+                            <div id = "error-panel">
+                                <span class="error-message">{{ form.non_field_errors }}</span>
+                            </div>
+
+                            <p class="bs-component">
+                                <center>
+                                    <input class="btn btn-success btn-sm" type="submit" value="Add">
+                                </center>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Scheduled Events
+    </div>
+    {% if scheduledEvents %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:300px;text-align:center;'>Description</th>
+                        <th style='width:100px;text-align:center;'>Organiser</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:100px;text-align:center;'>Location</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in scheduledEvents %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.eventId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.eventId.description }}</td>
+                        <td class ="tableEntry">{{ item.eventId.organiserId.username }}</td>
+                        <td class ="tableEntry">{{ item.eventId.startTime }}, {{ item.eventId.startDate }} - {{ item.eventId.endTime }}, {{ item.eventId.endDate }}</td>
+                        <td class ="tableEntry">{{ item.eventId.locationId.locationName }}</td>
+                        <td class ="tableEntry"><button class = "btn btn-danger cancelScheduledEvent"  onclick="fillHiddenFieldEvent('{{ item.eventId.eventId }}', '{{ item.userId.username }}')" data-toggle="modal" data-target="#cancelScheduledEvent">Cancel</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:300px;text-align:center;'>Description</th>
+                        <th style='width:100px;text-align:center;'>Organiser</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:100px;text-align:center;'>Location</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            There are no scheduled events 
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Event Requests
+    </div>
+    {% if eventRequests %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>User</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in eventRequests %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.eventId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.userId.username }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptEventRequest('{{ item.eventId.eventId }}', '{{ item.userId.username }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectEventRequest('{{ item.eventId.eventId }}', '{{ item.userId.username }}')">Reject</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>User</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            There are no requests to be shown
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        All Events
+    </div>
+    {% if eventsList or eventsRequestSent%}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:300px;text-align:center;'>Description</th>
+                        <th style='width:100px;text-align:center;'>Organiser</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:200px;text-align:center;'>Location</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in eventsList %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.description }}</td>
+                        <td class ="tableEntry">{{ item.organiserId.username }}</td>
+                        <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, {{ item.endDate }}</td>
+                        <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                        <td class ="tableEntry"><button class = "btn btn-success joinEventButton" onclick="joinEvent('{{ item.eventId }}')">Join</button></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for item in eventsRequestSent %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.eventId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.eventId.description }}</td>
+                        <td class ="tableEntry">{{ item.eventId.organiserId.username }}</td>
+                        <td class ="tableEntry">{{ item.eventId.startTime }}, {{ item.eventId.startDate }} - {{ item.eventId.endTime }}, {{ item.eventId.endDate }}</td>
+                        <td class ="tableEntry">{{ item.eventId.locationId.locationName }}</td>
+                        <td class ="tableEntry"><button class = "btn btn-danger joinEventButton" onclick="CancelEvent('{{ item.eventId.eventId }}')">Cancel</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:300px;text-align:center;'>Description</th>
+                        <th style='width:100px;text-align:center;'>Organiser</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:200px;text-align:center;'>Location</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            There are no events to be shown
+        </div>
+    {% endif %}
+</div>
+
+<input type = "hidden" id="hiddenEventId1Parameter">
+<input type = "hidden" id="hiddenEventId2Parameter">
+
+<div class="modal fade" id="cancelScheduledEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>You will not be allowed to join this event again</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelScheduledEvent()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+	$("ul.nav.navbar-nav.navbar-right").css("display","inline");
+	$(document).ready(function(){
+		$(".startDateChallenge").find("#id_startDate").datepicker({
+            minDate: '0d',
+            onSelect: function(date){
+
+                var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+                var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+                if(date2==null){
+                    $(".endDateChallenge").show();
+                    $(".endDateChallenge").find(".dateinput").datepicker('setDate', date1);
+                    $(".endDateChallenge").find(".dateinput").datepicker('option', 'minDate', date1);
+                }
+                else if(date2<date1)
+                {
+                    $(".endDateChallenge").find(".dateinput").datepicker('setDate', date1);
+                    $(".endDateChallenge").find(".dateinput").datepicker('option', 'minDate', date1);
+                }
+
+            }
+        });
+
+        $(".endDateChallenge").find(".dateinput").datepicker({
+            minDate: '0d',
+            onSelect: function(date){
+                var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+                var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+                var time1= $(".startTimeChallenge").find("#id_startTime").val();
+                var time2= $(".endTimeChallenge").find("#id_endTime").val();
+
+                if(date1!=null && date2!=null && time1!="" && time2!="")
+                {
+                    if(date1.getTime()==date2.getTime())
+                    {
+                        var time1split=time1.split(":");
+                        var time2split=time2.split(":");
+                        if(time1split.length!=2 || time2split.length!=2)
+                        {
+                            alert("Enter correct format of time Format is hh:mm");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                        else
+                        {
+                            var time1hr=parseInt(time1split[0]);
+                            var time1min=parseInt(time1split[1]);
+                            var time2hr=parseInt(time2split[0]);
+                            var time2min=parseInt(time2split[1]);
+                            if (time1hr*60 + time1min >time2hr*60+time2min)
+                            {
+                                alert("End time should be after Start Time");
+                                $(".startTimeChallenge").find("#id_startTime").val("");
+                                $(".endTimeChallenge").find("#id_endTime").val("");
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        });
+
+        $(".startTimeChallenge").find("#id_startTime").change(function(){
+            var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+            var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+            var time1= $(".startTimeChallenge").find("#id_startTime").val();
+            var time2= $(".endTimeChallenge").find("#id_endTime").val();
+
+            if(date1!=null && date2!=null && time1!="" && time2!="")
+            {
+                if(date1.getTime()==date2.getTime())
+                {
+                    var time1split=time1.split(":");
+                    var time2split=time2.split(":");
+                    if(time1split.length!=2 || time2split.length!=2)
+                    {
+                        alert("Enter correct format of time Format is hh:mm");
+                        $(".startTimeChallenge").find("#id_startTime").val("");
+                        $(".endTimeChallenge").find("#id_endTime").val("");
+                    }
+                    else
+                    {
+                        var time1hr=parseInt(time1split[0]);
+                        var time1min=parseInt(time1split[1]);
+                        var time2hr=parseInt(time2split[0]);
+                        var time2min=parseInt(time2split[1]);
+                        if (time1hr*60 + time1min >time2hr*60+time2min)
+                        {
+                            alert("End time should be after Start Time");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                    }
+                }
+
+            }
+
+        });
+
+        $(".endTimeChallenge").find("#id_endTime").change(function(){
+            var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+            var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+            var time1= $(".startTimeChallenge").find("#id_startTime").val();
+            var time2= $(".endTimeChallenge").find("#id_endTime").val();
+            if(date1!=null && date2!=null && time1!="" && time2!="")
+            {
+                if(date1.getTime()==date2.getTime())
+                {
+                    var time1split=time1.split(":");
+                    var time2split=time2.split(":");
+                    if(time1split.length!=2 || time2split.length!=2)
+                    {
+                        alert("Enter correct format of time Format is hh:mm");
+                        $(".startTimeChallenge").find("#id_startTime").val("");
+                        $(".endTimeChallenge").find("#id_endTime").val("");
+                    }
+                    else
+                    {
+                        var time1hr=parseInt(time1split[0]);
+                        var time1min=parseInt(time1split[1]);
+                        var time2hr=parseInt(time2split[0]);
+                        var time2min=parseInt(time2split[1]);
+                        if (time1hr*60 + time1min >time2hr*60+time2min)
+                        {
+                            alert("End time should be after Start Time");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                    }
+                }
+
+            }
+        });
+        $(".endDateChallenge").hide();
+
+        var sportName = $("#addEvent").find("#id_sportName").val();
+
+        $.ajax({
+        url: '/ajax/getLocations/',
+        data: {
+          'sportName': sportName
+        },
+        dataType: 'json',
+        success: function (data) {
+            var v;
+            $("#addEvent").find("#id_locationName").children().remove();
+            for(v in data.locations)
+            {
+                $("#addEvent").find("#id_locationName").append($('<option>', {
+                    value: data.locations[v][0],
+                    text: data.locations[v][1]
+                }));
+            }
+        }
+        });
+
+        $("#addEvent").find("#id_sportName").change(function()
+        {
+            // alert("SDFs");
+            var sportName = $(this).val();
+            $.ajax({
+            url: '/ajax/getLocations/',
+            data: {
+              'sportName': sportName
+            },
+            dataType: 'json',
+            success: function (data) {
+                var v;
+                $("#addEvent").find("#id_locationName").children().remove();
+                for(v in data.locations)
+                {
+                    $("#addEvent").find("#id_locationName").append($('<option>', {
+                        value: data.locations[v][0],
+                        text: data.locations[v][1]
+                    }));
+                }
+            }
+            });
+
+        });
+
+    });
+</script>
+{% endblock %}

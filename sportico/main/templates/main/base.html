@@ -1,0 +1,39 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="row">
+<div class="side-menu">
+    
+    <nav class="navbar navbar-default" role="navigation">
+    
+    <!-- Main Menu -->
+    <div class="side-menu-container">
+        <ul class="nav navbar-nav">
+            <li class="active sideBarLink"><a href="/home" id="homeLink"><span class="glyphicon glyphicon-plane"></span> Home</a></li>
+            <li class="active sideBarLink"><a href="/profile" id="profileLink"><span class="glyphicon glyphicon-plane"></span> Profile</a></li>
+            <li class="active sideBarLink"><a href="/notifications"><span class="glyphicon glyphicon-plane"></span> Notifications</a></li>
+            <li class="active sideBarLink"><a href="/singles"><span class="glyphicon glyphicon-plane"></span> Singles</a></li>
+            <li class="active sideBarLink"><a href="/doubles"><span class="glyphicon glyphicon-plane"></span> Doubles</a></li>
+            <li class="active sideBarLink"><a href="/team"><span class="glyphicon glyphicon-plane"></span> Teams</a></li>
+            <li class="active sideBarLink"><a href="/events"><span class="glyphicon glyphicon-plane"></span> Events</a></li>
+        </ul>
+    </div>
+</nav>
+    
+    </div>
+
+    <div class="container-fluid">
+        <div class="side-body">
+           {% block pageSpecificContent %}
+           {% endblock %}    
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% endblock %}
+

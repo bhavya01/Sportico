@@ -1,0 +1,45 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="container contentBlock" style="margin-top: 5%;">
+<div class="initial">
+<h3>Why should you use Sportico?</h3>
+<h4>Sportico is a free platform for sporting enthusiasts to connect in this social age. You can challenge your friends and foes alike as well as go out and meet new people. <h4>
+</div>
+<br>
+<div class="initial">
+<h3>Why Sportico Works?</h3>
+<h4>It starts with users contributing. The more the users use the application, better matches are provided to them. </h4>
+</div>
+<br>
+<div class="initial">
+<h3>Will Sportico always stay free?</h3>
+<h4>Sportico is and will stay free to sporting enthusiasts. We started
+the application on the belief that nothing should come in the way of
+sports. We continue to believe that. We also believe in protecting
+our user’s information, and would never sell it or do anything to
+betray your trust.</h4>
+</div>
+<br>
+<div class="initial">
+<h3>Is there a mobile app?</h3>
+<h4>There isn't a mobile app at the present. Keep watching this space as and when it changes.</h4>
+</div>
+<br>
+<br>
+<br>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+{% if user.is_authenticated %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% else %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","none");
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'login/base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row" id="sign-card">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="panel-title">Sign in to Continue</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post" action="/login/">
+{% csrf_token %}
+
+                        <p class="bs-component">
+                            <img src = "../../static/login/images/UserImage.png" alt="User-Image" id="user-image">
+                            <table class="user-table">
+                                <tr>
+                                    <td class="user-field">{{ form.username.label_tag }}</td>
+                                    <td class="user-field">{{ form.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.password.label_tag }}</td>
+                                    <td class="user-field">{{ form.password }}</td>
+                                </tr>
+                            </table>
+
+                        </p>
+
+                        <div id="error-panel">
+                            <center>
+                            {% if form.errors %}
+                                <p class="error-message">Your username and password didn't match</p>
+                            {% else %}
+                                {% if next %}
+                                    {% if user.is_authenticated %}
+                                        <p class="error-message">Your account doesn't have access to this page</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            </center>
+                        </div>
+
+                        <p class="bs-component">
+                            <center>
+                                <input class="btn btn-success btn-sm" type="submit" value="Sign In">
+                            </center>
+                        </p>
+                        <input type="hidden" name="next" value="/home">
+                    </form>
+                    <div id ="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a href="/register" id="create-account">Create Account</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% if user.is_authenticated %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% else %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","none");
+</script>
+{% endif %}
+{% endblock %}

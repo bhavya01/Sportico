@@ -1,0 +1,645 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+<head>
+{{form.media}}
+</head>
+
+<div class = "fillSlotSingles">
+    <button class = "btn btn-primary buttonClass pull-right" data-toggle="modal" data-target="#fillSlotSingles"> Add Free Slot </button>
+    <button class = "btn btn-primary buttonClass pull-right" data-toggle="modal" data-target="#challengeSingles"> Challenge </button>
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Match Results
+    </div>
+    {% if singlesResults %} 
+    <div class = "cardContainerClass">
+        <table class='table table-bordered table-hover table-striped display' id='example'>
+            <thead>
+                <tr>
+                    <th style='width:200px;text-align:center;'>Opponent</th>
+                    <th style='width:200px;text-align:center;'>Sport</th>
+                    <th style='width:100px;text-align:center;'>Date</th>
+                    <th style='width:100px;text-align:center;'>Score</th>
+                    <th style='width:100px;text-align:center;'>Winner</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in singlesResults %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{% if item.playerId1.username == username %} {{ item.playerId2.username }} {% else %} {{ item.playerId1.username}} {% endif %}</td>
+                    <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.matchScore }}</td>
+                    <td class ="tableEntry">{{ item.victorId.username }}</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:200px;text-align:center;'>Opponent</th>
+                    <th style='width:200px;text-align:center;'>Sport</th>
+                    <th style='width:100px;text-align:center;'>Date</th>
+                    <th style='width:100px;text-align:center;'>Score</th>
+                    <th style='width:100px;text-align:center;'>Winner</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+        <div class="cardContent">
+            There are no results to be shown
+        </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="fillSlotSingles" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="3" style="top:0px !important; overflow:scroll;">
+  
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalHeader"><strong>Add a Slot</strong></h4>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="closeModal">Close</button>
+            </div>
+             
+            <div class="modal-body clearfix">
+                <div class="col-sm-12 " align="center">
+                    <div class="form2">
+                        <form method="post" action="/registerSinglesFillSlot/" id="register-user-fillSlot">{% csrf_token %}
+                            <table class="tableForm2">
+                                <tr>
+                                    <td class="user-field">{{ formFillSlot.sportName.label_tag }}</td>
+                                    <td class="user-field">{{ formFillSlot.sportName }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ formFillSlot.locationName.label_tag }}</td>
+                                    <td class="user-field">{{ formFillSlot.locationName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ formFillSlot.startTime.label_tag }}</td>
+                                    <td class="user-field startTimeFillSlot">{{ formFillSlot.startTime }}</td>
+                                    <td class="user-field startDateFillSlot">{{ formFillSlot.startDate2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ formFillSlot.endTime.label_tag }}</td>
+                                    <td class="user-field endTimeFillSlot">{{ formFillSlot.endTime }}</td>
+                                    <td class="user-field endDateFillSlot">{{ formFillSlot.endDate2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ formFillSlot.levelBase.label_tag }}</td>
+                                    <td class="user-field level1">{{ formFillSlot.levelBase }}</td>
+                                    <td class="user-field level2">{{ formFillSlot.levelTop }}</td>
+                                </tr>
+                                <br>
+                                <tr>
+                                <td></td>
+                                <td colspan="2" id="slider-range"> </td>
+                                </tr>
+                                <br>
+                            </table>
+
+                            <div id = "error-panel">
+                                <span class="error-message">{{ form.non_field_errors }}</span>
+                            </div>
+
+                            <p class="bs-component">
+                                <center>
+                                    <input class="btn btn-success btn-sm" type="submit" value="Add">
+                                </center>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="challengeSingles" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+  
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalHeader"><strong>CHALLENGE</strong></h4>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="closeModal">Close</button>
+            </div>
+             
+            <div class="modal-body clearfix">
+                <div class="col-sm-12 " align="center">
+                    <div class="form">
+                        <form method="post" action="/registerSinglesChallenge/" id="register-user-challenge">{% csrf_token %}
+                            <table class="tableForm">
+                                <tr>
+                                    <td class="user-field">{{ form.sportName.label_tag }}</td>
+                                    <td class="user-field">{{ form.sportName }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.playerName.label_tag }}</td>
+                                    <td class="user-field">{{ form.playerName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.locationName.label_tag }}</td>
+                                    <td class="user-field">{{ form.locationName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.startTime.label_tag }}</td>
+                                    <td class="user-field startTimeChallenge">{{ form.startTime }}</td>
+                                    <td class="user-field startDateChallenge">{{ form.startDate }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ form.endTime.label_tag }}</td>
+                                    <td class="user-field endTimeChallenge">{{ form.endTime }}</td>
+                                    <td class="user-field endDateChallenge">{{ form.endDate }}</td>
+                                </tr>
+                            </table>
+
+                            <div id = "error-panel">
+                                <span class="error-message">{{ form.non_field_errors }}</span>
+                                <span class="error-message">{{ form.field_errors }}</span>
+                            </div>
+
+                            <p class="bs-component">
+                                <center>
+                                    <input class="btn btn-success btn-sm" type="submit" value="Add">
+                                </center>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+    $(document).ready(function(){
+        var availableTags = [];
+        $( "#id_playerName" ).autocomplete({
+          source: availableTags
+        });
+
+        $( "#slider-range" ).slider({
+          range: true,
+          min: 1,
+          max: 10,
+          values: [ 3,8 ],
+          slide: function( event, ui ) {
+            $("#register-user-fillSlot").find("#id_levelBase").val(ui.values[ 0 ]);
+            $("#register-user-fillSlot").find("#id_levelTop").val( ui.values[ 1]);
+          }
+        });
+        $("#register-user-fillSlot").find("#id_levelBase").val( $( "#slider-range" ).slider( "values", 0 ));
+        $("#register-user-fillSlot").find("#id_levelTop").val( $( "#slider-range" ).slider( "values", 1 ));
+
+        $("#register-user-fillSlot").find("#id_levelBase").change(function(){
+            var topVal =$("#register-user-fillSlot").find("#id_levelTop").val();
+            var baseVal=$("#register-user-fillSlot").find("#id_levelBase").val();
+            if(baseVal > topVal || baseVal>10 || baseVal<1)
+            {
+                alert("Enter a valid lower range");
+                var option;
+                if(topVal<3)
+                {
+                    option=topVal;
+                }
+                else
+                {
+                    option=3;
+                }
+                $("#register-user-fillSlot").find("#id_levelBase").val(option);
+                $( "#slider-range" ).slider( "values", [option , topVal] );
+                
+            }
+            else{
+                $( "#slider-range" ).slider( "values", [baseVal , topVal] );
+                
+            }
+        });
+
+        $("#register-user-fillSlot").find("#id_levelTop").change(function(){
+            var baseVal =$("#register-user-fillSlot").find("#id_levelBase").val();
+            var topVal =$("#register-user-fillSlot").find("#id_levelTop").val();
+            if(topVal < baseVal || topVal>10 || topVal<1)
+            {
+                alert("Enter a valid upper range");
+                var option;
+                if(baseVal>8)
+                {
+                    option=baseVal;
+                }
+                else
+                {
+                    option=8;
+                }
+                $("#register-user-fillSlot").find("#id_levelTop").val(option);
+                $( "#slider-range" ).slider( "values", [baseVal , option] );
+                
+            }
+            else{
+                $( "#slider-range" ).slider( "values", [baseVal , topVal] );
+            }
+        });
+
+        
+        $(".startDateChallenge").find("#id_startDate").datepicker({
+            minDate: '0d',
+            onSelect: function(date){
+
+                var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+                var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+                if(date2==null){
+                    $(".endDateChallenge").show();
+                    $(".endDateChallenge").find(".dateinput").datepicker('setDate', date1);
+                    $(".endDateChallenge").find(".dateinput").datepicker('option', 'minDate', date1);
+                }
+                else if(date2<date1)
+                {
+                    $(".endDateChallenge").find(".dateinput").datepicker('setDate', date1);
+                    $(".endDateChallenge").find(".dateinput").datepicker('option', 'minDate', date1);
+                }
+
+            }
+        });
+        $(".endDateChallenge").find(".dateinput").datepicker({
+            minDate: '0d',
+            onSelect: function(date){
+                var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+                var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+                var time1= $(".startTimeChallenge").find("#id_startTime").val();
+                var time2= $(".endTimeChallenge").find("#id_endTime").val();
+
+                if(date1!=null && date2!=null && time1!="" && time2!="")
+                {
+                    if(date1.getTime()==date2.getTime())
+                    {
+                        var time1split=time1.split(":");
+                        var time2split=time2.split(":");
+                        if(time1split.length!=2 || time2split.length!=2)
+                        {
+                            alert("Enter correct format of time Format is hh:mm");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                        else
+                        {
+                            var time1hr=parseInt(time1split[0]);
+                            var time1min=parseInt(time1split[1]);
+                            var time2hr=parseInt(time2split[0]);
+                            var time2min=parseInt(time2split[1]);
+                            if (time1hr*60 + time1min >time2hr*60+time2min)
+                            {
+                                alert("End time should be after Start Time");
+                                $(".startTimeChallenge").find("#id_startTime").val("");
+                                $(".endTimeChallenge").find("#id_endTime").val("");
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        });
+        $(".startTimeChallenge").find("#id_startTime").change(function(){
+            var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+            var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+            var time1= $(".startTimeChallenge").find("#id_startTime").val();
+            var time2= $(".endTimeChallenge").find("#id_endTime").val();
+
+            if(date1!=null && date2!=null && time1!="" && time2!="")
+            {
+                if(date1.getTime()==date2.getTime())
+                {
+                    var time1split=time1.split(":");
+                    var time2split=time2.split(":");
+                    if(time1split.length!=2 || time2split.length!=2)
+                    {
+                        alert("Enter correct format of time Format is hh:mm");
+                        $(".startTimeChallenge").find("#id_startTime").val("");
+                        $(".endTimeChallenge").find("#id_endTime").val("");
+                    }
+                    else
+                    {
+                        var time1hr=parseInt(time1split[0]);
+                        var time1min=parseInt(time1split[1]);
+                        var time2hr=parseInt(time2split[0]);
+                        var time2min=parseInt(time2split[1]);
+                        if (time1hr*60 + time1min >time2hr*60+time2min)
+                        {
+                            alert("End time should be after Start Time");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                    }
+                }
+
+            }
+
+        });
+        $(".endTimeChallenge").find("#id_endTime").change(function(){
+            var date1 = $(".startDateChallenge").find(".dateinput").datepicker('getDate');
+                var date2 = $(".endDateChallenge").find(".dateinput").datepicker('getDate');
+                var time1= $(".startTimeChallenge").find("#id_startTime").val();
+                var time2= $(".endTimeChallenge").find("#id_endTime").val();
+                if(date1!=null && date2!=null && time1!="" && time2!="")
+                {
+                    if(date1.getTime()==date2.getTime())
+                    {
+                        var time1split=time1.split(":");
+                        var time2split=time2.split(":");
+                        if(time1split.length!=2 || time2split.length!=2)
+                        {
+                            alert("Enter correct format of time Format is hh:mm");
+                            $(".startTimeChallenge").find("#id_startTime").val("");
+                            $(".endTimeChallenge").find("#id_endTime").val("");
+                        }
+                        else
+                        {
+                            var time1hr=parseInt(time1split[0]);
+                            var time1min=parseInt(time1split[1]);
+                            var time2hr=parseInt(time2split[0]);
+                            var time2min=parseInt(time2split[1]);
+                            if (time1hr*60 + time1min >time2hr*60+time2min)
+                            {
+                                alert("End time should be after Start Time");
+                                $(".startTimeChallenge").find("#id_startTime").val("");
+                                $(".endTimeChallenge").find("#id_endTime").val("");
+                            }
+                        }
+                    }
+
+                }
+        });
+        $(".endDateChallenge").hide();
+
+
+        $(".startDateFillSlot").find(".dateinput2").datepicker({
+            minDate: '2d',
+            onSelect: function(date){
+                var date1 = $(".startDateFillSlot").find(".dateinput2").datepicker('getDate');
+                var date2 = $(".endDateFillSlot").find(".dateinput2").datepicker('getDate');
+                if(date2==null){
+                    $(".endDateFillSlot").show();
+                    $(".endDateFillSlot").find(".dateinput2").datepicker('setDate', date1);
+                    $(".endDateFillSlot").find(".dateinput2").datepicker('option', 'minDate', date1);
+                }
+                else if(date2<date1)
+                {
+                    $(".endDateFillSlot").find(".dateinput2").datepicker('setDate', date1);
+                    $(".endDateFillSlot").find(".dateinput2").datepicker('option', 'minDate', date1);
+                }
+
+            }
+        });
+        
+
+        $(".endDateFillSlot").find(".dateinput2").datepicker({
+            minDate: '0d',
+            onSelect: function(date){
+                var date1 = $(".startDateFillSlot").find(".dateinput2").datepicker('getDate');
+                var date2 = $(".endDateFillSlot").find(".dateinput2").datepicker('getDate');
+                var time1= $(".startTimeFillSlot").find("#id_startTime").val();
+                var time2= $(".endTimeFillSlot").find("#id_endTime").val();
+
+                if(date1!=null && date2!=null && time1!=null && time2!=null)
+                {
+                    if(date1.getTime()==date2.getTime())
+                    {
+                        var time1split=time1.split(":");
+                        var time2split=time2.split(":");
+                        if(time1split.length!=2 || time2split.length!=2)
+                        {
+                            alert("Enter correct format of time Format is hh:mm");
+                            $(".startTimeFillSlot").find("#id_startTime").val("");
+                            $(".endTimeFillSlot").find("#id_endTime").val("");
+                        }
+                        else
+                        {
+                            var time1hr=parseInt(time1split[0]);
+                            var time1min=parseInt(time1split[1]);
+                            var time2hr=parseInt(time2split[0]);
+                            var time2min=parseInt(time2split[1]);
+                            if (time1hr*60 + time1min >time2hr*60+time2min)
+                            {
+                                alert("End time should be after Start Time");
+                                $(".startTimeFillSlot").find("#id_startTime").val("");
+                                $(".endTimeFillSlot").find("#id_endTime").val("");
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        });
+        $(".startTimeFillSlot").find("#id_startTime").change(function(){
+            var date1 = $(".startDateFillSlot").find(".dateinput2").datepicker('getDate');
+            var date2 = $(".endDateFillSlot").find(".dateinput2").datepicker('getDate');
+            var time1= $(".startTimeFillSlot").find("#id_startTime").val();
+            var time2= $(".endTimeFillSlot").find("#id_endTime").val();
+
+            if(date1!=null && date2!=null && time1!=null && time2!=null)
+            {
+                if(date1.getTime()==date2.getTime())
+                {
+                    var time1split=time1.split(":");
+                    var time2split=time2.split(":");
+                    if(time1split.length!=2 || time2split.length!=2)
+                    {
+                        alert("Enter correct format of time Format is hh:mm");
+                        $(".startTimeFillSlot").find("#id_startTime").val("");
+                        $(".endTimeFillSlot").find("#id_endTime").val("");
+                    }
+                    else
+                    {
+                        var time1hr=parseInt(time1split[0]);
+                        var time1min=parseInt(time1split[1]);
+                        var time2hr=parseInt(time2split[0]);
+                        var time2min=parseInt(time2split[1]);
+                        if (time1hr*60 + time1min >time2hr*60+time2min)
+                        {
+                            alert("End time should be after Start Time");
+                            $(".startTimeFillSlot").find("#id_startTime").val("");
+                            $(".endTimeFillSlot").find("#id_endTime").val("");
+                        }
+                    }
+                }
+
+            }
+
+        });
+        $(".endTimeFillSlot").find("#id_endTime").change(function(){
+            var date1 = $(".startDateFillSlot").find(".dateinput2").datepicker('getDate');
+                var date2 = $(".endDateFillSlot").find(".dateinput2").datepicker('getDate');
+                var time1= $(".startTimeFillSlot").find("#id_startTime").val();
+                var time2= $(".endTimeFillSlot").find("#id_endTime").val();
+                if(date1!=null && date2!=null && time1!=null && time2!=null)
+                {
+                    if(date1.getTime()==date2.getTime())
+                    {
+                        var time1split=time1.split(":");
+                        var time2split=time2.split(":");
+                        if(time1split.length!=2 || time2split.length!=2)
+                        {
+                            alert("Enter correct format of time Format is hh:mm");
+                            $(".startTimeFillSlot").find("#id_startTime").val("");
+                            $(".endTimeFillSlot").find("#id_endTime").val("");
+                        }
+                        else
+                        {
+                            var time1hr=parseInt(time1split[0]);
+                            var time1min=parseInt(time1split[1]);
+                            var time2hr=parseInt(time2split[0]);
+                            var time2min=parseInt(time2split[1]);
+                            if (time1hr*60 + time1min >time2hr*60+time2min)
+                            {
+                                alert("End time should be after Start Time");
+                                $(".startTimeFillSlot").find("#id_startTime").val("");
+                                $(".endTimeFillSlot").find("#id_endTime").val("");
+                            }
+                        }
+                    }
+
+                }
+        });
+
+        $(".endDateFillSlot").hide();
+
+        var sportName = $("#register-user-challenge").find("#id_sportName").val();
+
+        $.ajax({
+        url: '/ajax/getLocations/',
+        data: {
+          'sportName': sportName
+        },
+        dataType: 'json',
+        success: function (data) {
+            var v;
+            $("#register-user-challenge").find("#id_locationName").children().remove();
+            for(v in data.locations)
+            {
+                $("#register-user-challenge").find("#id_locationName").append($('<option>', {
+                    value: data.locations[v][0],
+                    text: data.locations[v][1]
+                }));
+            }
+        }
+        });
+
+        $("#register-user-challenge").find("#id_sportName").change(function()
+        {
+            var sportName = $(this).val();
+            $("#register-user-challenge").find("#id_playerName").val("");
+            $.ajax({
+            url: '/ajax/getLocations/',
+            data: {
+              'sportName': sportName
+            },
+            dataType: 'json',
+            success: function (data) {
+                var v;
+                $("#register-user-challenge").find("#id_locationName").children().remove();
+                for(v in data.locations)
+                {
+                    $("#register-user-challenge").find("#id_locationName").append($('<option>', {
+                        value: data.locations[v][0],
+                        text: data.locations[v][1]
+                    }));
+                }
+            }
+            });
+
+        });
+
+        $("#register-user-challenge").find("#id_playerName").keyup(function()
+        {
+            var playerName = $(this).val();
+            var sportName = $("#register-user-challenge").find("#id_sportName").val();
+            var m;
+            $.ajax({
+            url: '/ajax/getPlayerNames/',
+            data: {
+              'playerName': playerName,
+              'sportName': sportName
+            },
+            dataType: 'json',
+            success: function (data) {
+                var v;
+                availableTags=[];
+                for(v in data.players)
+                {
+                    availableTags.push(data.players[v]);
+                }
+                $("#register-user-challenge").find( "#id_playerName" ).autocomplete('option', 'source', availableTags)
+            }
+            });
+
+        });
+
+
+
+
+
+        sportName = $("#register-user-fillSlot").find("#id_sportName").val();
+
+        $.ajax({
+        url: '/ajax/getLocations/',
+        data: {
+          'sportName': sportName
+        },
+        dataType: 'json',
+        success: function (data) {
+            var v;
+            $("#register-user-fillSlot").find("#id_locationName").children().remove();
+            for(v in data.locations)
+            {
+                $("#register-user-fillSlot").find("#id_locationName").append($('<option>', {
+                    value: data.locations[v][0],
+                    text: data.locations[v][1]
+                }));
+            }
+        }
+        });
+
+        $("#register-user-fillSlot").find("#id_sportName").change(function()
+        {
+            var sportName = $(this).val();
+
+            $.ajax({
+            url: '/ajax/getLocations/',
+            data: {
+              'sportName': sportName
+            },
+            dataType: 'json',
+            success: function (data) {
+                var v;
+                $("#register-user-fillSlot").find("#id_locationName").children().remove();
+                for(v in data.locations)
+                {
+                    $("#register-user-fillSlot").find("#id_locationName").append($('<option>', {
+                        value: data.locations[v][0],
+                        text: data.locations[v][1]
+                    }));
+                }
+            }
+            });
+
+        });
+
+    });
+</script>
+{% endblock %}
+

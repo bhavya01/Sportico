@@ -1,0 +1,480 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+<head>
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/redmond/jquery-ui.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script>
+	<style >
+/*input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('searchicon.png');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+input[type=text]:focus {
+    width: 50%;
+}*/
+
+</style>
+</head>
+
+
+<br>
+<br>
+
+<input type="text" id="userProfile" placeholder="Search User" style="margin-bottom: 10px; margin-left: 8px;"> 
+<button class = "btn btn-success" id="searchUser" onclick="searchUser()" style="display: none;">Search</button></td>
+
+<div class="card card-3">
+    <div class="title"> 
+        Profile
+        {% if currentUser == user %}
+            <button class = "btn btn-danger pull-right buttonClass" id="blacklistList" onclick="blockList()">Blacklisted Users</button>
+            <button class = "btn btn-success pull-right buttonClass" id="friendList" onclick="friendList()">Friends</button>
+        {% else %}
+            {% if blacklist == 0 %}
+                <button class = "btn btn-danger pull-right blackList buttonClass" id="{{user.username}}">Blacklist</button>
+            {% else %}
+                <button class = "btn btn-success pull-right blackList buttonClass" id="{{user.username}}">UnBlacklist</button>
+            {% endif %}
+
+            {% if friend == 0 %}
+                {% if friendRequestAccept == 0 and friendRequestCancel == 0 %}
+                    <button class = "btn btn-primary pull-right friend buttonClass" id="{{user.username}}">Add Friend</button>
+                {% elif friendRequestCancel == 1 %}
+                    <button class = "btn btn-warning pull-right friend buttonClass" id="{{user.username}}">Cancel Request</button>
+                {% else %}
+                    <button class = "btn btn-danger reject-request pull-right friend buttonClass" id="{{user.username}}">Reject Request</button>
+                    <button class = "btn btn-success accept-request pull-right friend buttonClass" id="{{user.username}}">Accept Request</button>
+                {% endif %}
+            {% else %}
+                <button class = "btn btn-danger pull-right friend buttonClass" id="{{user.username}}">UnFriend</button>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class = "userProfile">
+        <table class='table table-bordered table-hover table-striped display'>
+            <thead>
+                <tr>
+                    <th style='width:300px;text-align:center;' colspan='2'>Information</th>
+                    <th style='width:500px;text-align:center;'>Profile Picture</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">UserName</td>
+                    <td class="profileFieldEntry">{{user.username}}</td>
+                    <td rowspan='8'>
+                        <div align="center">
+                        {% if user.profilePicture %}
+                            <img class="profilePicture" src="{{user.profilePicture}}" alt="Upload a profilePicture">                        
+                        {% else %}
+                            <img class="profilePicture" src="/media/UserImage.png" alt="Default Profile Picture">
+                        {% endif %}
+
+                        {% if uploadButton == "True" %}
+                            <form method="post" enctype="multipart/form-data" action="/uploadImage/">{% csrf_token %}
+                                <input type="file" name="myfile1" style="padding-bottom: 15px; margin-left: 18%;">
+                                <button class = "btn btn-success " id="uploadImage">Upload New Profile Picture</button>
+                            </form>
+                        {% endif %}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Nickname</td>
+                    <td class="profileFieldEntry">{{user.nickName}}</td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Date of Birth</td>
+                    <td class="profileFieldEntry">{{user.birthDate}}</td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Gender</td>
+                    <td class="profileFieldEntry">{{user.gender}}</td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Address</td>
+                    <td class="profileFieldEntry">{% if user.street %} {{user.street}}, {% endif %} {% if user.city %} {{user.city}}, {% endif %} {% if user.state %} {{user.state}}, {% endif %} {% if user.country %} {{user.country}} {% else %} No address to be shown {% endif %}</td>
+                </tr>
+
+                <tr class='gradeA'>       
+                    <td class="profileFieldEntry">Community Rating</td>
+                    <td class="profileFieldEntry">{{user.communityRating}}</td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Phone Number</td>
+                    <td class="profileFieldEntry">{{user.phoneNumber}}</td>
+                </tr>
+
+                <tr class='gradeA'>
+                    <td class="profileFieldEntry">Joined on</td>
+                    <td class="profileFieldEntry">{{user.appJoinDate}}</td>
+                </tr>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:300px;text-align:center;' colspan='2'>Information</th>
+                    <th style='width:500px;text-align:center;'>Profile Picture</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Sports Played
+    </div>
+    {% if sports %}
+        <div class = "Teams">
+            <table class='table table-bordered table-hover table-striped display'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>ladderScore</th>
+                        <th style='width:100px;text-align:center;'>level</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in sports %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.ladderScore }}</td>
+                        <td class ="tableEntry">{{ item.level}}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>ladderScore</th>
+                        <th style='width:100px;text-align:center;'>level</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            The user does not play any sports
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Doubles Teams
+    </div>
+    {% if doubleTeams %}
+    	<div class = "doubleTeams">
+            <table class='table table-bordered table-hover table-striped display'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Rating</th>
+                        <th style='width:200px;text-align:center;'>Joined On</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in doubleTeams %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.teamName }}</td>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.captainId }}</td>
+                        <td class ="tableEntry">{{ item.ladderScore }}</td>               
+                        <td class ="tableEntry">{{ item.formationDate }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Rating</th>
+                        <th style='width:100px;text-align:center;'>Joined On</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            The user is not part of any doubles teams
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Teams
+    </div>
+    {% if teams %}
+    	<div class = "Teams">
+            <table class='table table-bordered table-hover table-striped display'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Rating</th>
+                        <th style='width:200px;text-align:center;'>Position</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in teams %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.teamId.teamName }}</td>
+                        <td class ="tableEntry">{{ item.teamId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.teamId.captainId.username }}</td>
+                        <td class ="tableEntry">{{ item.teamId.ladderScore }}</td>               
+                        <td class ="tableEntry">{{ item.position }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Rating</th>
+                        <th style='width:100px;text-align:center;'>Joined On</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            The user is not part of any teams
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$("ul.nav.navbar-nav.navbar-right").css("display","inline");
+$(document).ready(function(){
+	// alert("DSvgdsv");
+    var availableTags = [];
+    
+    $("#userProfile" ).autocomplete({
+        source: availableTags,
+        select:function(e,ui){
+        	// alert("Dsf");
+        	var userName = ui.item.value;
+        	$("#searchUser").show();
+        }
+    });
+
+    $("#userProfile").keyup(function()
+    {
+	    $("#searchUser").hide();
+        var userName = $(this).val();
+        $.ajax({
+        url: '/ajax/getUsernames/',
+        data: {
+          'username': userName,
+        },
+        dataType: 'json',
+        success: function (data) {
+            var v;
+            availableTags=[];
+            for(v in data.userList)
+            {
+                availableTags.push(data.userList[v]);
+            }
+            $("#userProfile" ).autocomplete('option', 'source', availableTags)
+        }
+        });
+    });
+
+
+});
+
+function searchUser() {
+	var username=$("#userProfile").val();
+	window.location.href = '/profile/user/'+username+'/';
+}	
+
+$(".blackList").click(function() {
+	var username = $(".blackList").attr("id");
+	if($(".blackList").text() == "Blacklist")
+	{	
+		$.ajax({
+		url: '/ajax/blockUser/',
+		data: {
+		  'username': username,
+		},
+		dataType: 'json',
+		success: function (data) {
+			if(data.status=="success")
+			{
+				$(".blackList").text("UnBlacklist");
+				$(".blackList").removeClass("btn-danger");
+				$(".blackList").addClass("btn-success");
+			}
+		    
+		}
+		});
+	}
+	else
+	{
+		
+		$.ajax({
+		url: '/ajax/unBlockUser/',
+		data: {
+		  'username': username,
+		},
+		dataType: 'json',
+		success: function (data) {
+			if(data.status=="success")
+			{
+				$(".blackList").text("Blacklist");
+				$(".blackList").removeClass("btn-success");
+				$(".blackList").addClass("btn-danger");
+			}
+		    
+		}
+		});
+
+	}
+});
+
+$(".friend").click(function() {
+    var username = $(".friend").attr("id");
+
+    if($(this).text() == "Add Friend")
+    {   
+        $.ajax({
+        url: '/ajax/sendFriendRequest/',
+        data: {
+          'username': username,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data.status=="success")
+            {
+                $(".friend").text("Cancel Request");
+                $(".friend").removeClass("btn-primary");
+                $(".friend").addClass("btn-warning");
+            }
+            
+        }
+        });
+    }
+    else if($(this).text() == "Cancel Request")
+    {   
+        $.ajax({
+        url: '/ajax/cancelFriendRequest/',
+        data: {
+          'username': username,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data.status=="success")
+            {
+                $(".friend").text("Add Friend");
+                $(".friend").removeClass("btn-warning");
+                $(".friend").addClass("btn-primary");
+            }
+            
+        }
+        });
+    }
+    else if($(this).text() == "Accept Request")
+    {   
+        $.ajax({
+        url: '/ajax/acceptFriendRequest/',
+        data: {
+          'username': username,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data.status=="success")
+            {
+                $(".friend").text("UnFriend");
+                $(".friend").removeClass("btn-success");
+                $(".friend").addClass("btn-danger");
+                $(".reject-request").remove();
+            }
+            
+        }
+        });
+    }
+    else if($(this).text() == "Reject Request")
+    {   
+        $.ajax({
+        url: '/ajax/rejectFriendRequest/',
+        data: {
+          'username': username,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data.status=="success")
+            {
+                $(".friend").text("Add Friend");
+                $(".friend").removeClass("btn-danger");
+                $(".friend").addClass("btn-primary");
+                $(".accept-request").remove();
+            }
+            
+        }
+        });
+    }
+    else
+    {
+        
+        $.ajax({
+        url: '/ajax/unFriend/',
+        data: {
+          'username': username,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if(data.status=="success")
+            {
+                $(".friend").text("Add Friend");
+                $(".friend").removeClass("btn-danger");
+                $(".friend").addClass("btn-primary");
+            }
+            
+        }
+        });
+
+    }
+});
+
+</script>
+
+{% endblock %}
+
+

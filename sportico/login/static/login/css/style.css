@@ -1,0 +1,98 @@
+#user-image {
+	width : 30%;
+	height : 10%;
+	margin-left : 35%;
+	padding-bottom : 3%;
+}
+
+#home-icon {
+	width : 3%;
+	margin-bottom: -2%;
+	margin-left : 20%;
+}
+
+.user-field {
+	padding-bottom : 5%;
+	padding-left : 1%;
+}
+
+.user-table {
+	margin-left : 4%;
+}
+
+#panel-title {
+	text-align : center;
+}
+
+#create-account {
+	margin-left : 46%;
+}
+
+.navbar-nav > li > a {
+	padding-top:5px !important; 
+	padding-bottom:5px !important;
+}
+
+.navbar {
+	min-height:26px !important
+
+}
+
+#sign-card {
+	margin-top: 5%;
+}
+
+#register-table {
+	margin-left: 15%;
+}
+
+#register-card {
+	margin-left: 10%;
+	margin-top : 1%;
+}
+
+.error-message {
+	color : red;
+}
+
+.view-button {
+	margin-left: 10%;
+	margin-right : 20%;
+	margin-bottom :	 2%;
+}
+
+.add-button {
+	margin-bottom :	 2%;
+}
+
+#edit-card {
+	margin-top : 3%;
+	margin-left : -15%;
+}
+
+.edit-field {
+	padding-top: 2%;
+}
+
+.save-assignment {
+	margin-top: 4%;
+	margin-left: 50%;
+}
+
+#breadcrumb {
+	margin-top: -1%;
+}
+
+.feedback-toggle {
+	margin-left: 45%;
+	margin-top: 2%;
+}
+
+.finish{
+	margin-top: 4%;
+	margin-bottom: 40%;
+}
+
+.feed-field{
+	text-align:center;
+}

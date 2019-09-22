@@ -1,0 +1,44 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="container contentBlock" style="margin-top: 5%;">
+<center><h1>Privacy Policy</h1></center>
+<div class="initial">
+<h4>Sportico recognizes that your privacy is very important and we take it seriously. This Privacy Policy describes Sportico's policies and procedures on the collection, use and disclosure of your information when you use Sportico, via the website, your mobile phone, or through Sportico's applications for mobile devices. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy does not apply to information we collect by other means (including offline) or from other sources. Capitalized terms that are not defined in this Privacy Policy have the meaning given them in our <a href="/terms">Terms of Service.</a></h4>
+</div>
+<div class="initial">
+<h3>Information Collection and Use</h3>
+<h4>Sportico uses information we collect to analyze how the Service is used, diagnose service or technical problems, maintain security, personalize content, remember information to help you efficiently access your account, monitor aggregate metrics such as total number of visitors, traffic, and demographic patterns, and track User Content and users as necessary to comply with the Digital Millennium Copyright Act and other applicable laws.</h4>
+</div>
+<br>
+<div class="initial">
+<h4>When you register for a member account with the Service, you will provide us information about yourself, such as your name and email address and sporting interests. If you create a profile, certain member information, including without limitation your name and any additional content that you submit on your profile will be displayed to other users to facilitate user interaction within our services.</h4>
+</div>
+<br>
+</div>
+
+<div id="footer">
+    <nav class="navbar navbar-fixed-bottom navbar-default" id="navbar-footer">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li><a href="/about">About Sportico</a></li>
+                <li><a href="/reason">Common FAQ's</a></li>
+                <li><a href="/privacy">Privacy</a></li>
+                <li><a href="/terms">Terms</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% if user.is_authenticated %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% else %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","none");
+</script>
+{% endif %}
+{% endblock %}

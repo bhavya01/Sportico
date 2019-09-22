@@ -1,0 +1,67 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+<div class="card card-3">
+    <div class="title"> 
+        Friends
+    </div>
+    {% if friends %} 
+        <div class = "userFriendList">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>UserId</th>
+                        <th style='width:300px;text-align:center;'>UnFriend</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in friends %}
+                    <tr class='gradeA'>
+                        <td>{{ user.username }} </td>
+                        <td><button class = "btn btn-danger UnFriend" id= {{ user.username }} >UnFriend </button>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>UserId</th>
+                        <th style='width:300px;text-align:center;'>UnFriend</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>  
+    {% else %}
+        <div class="cardContent">
+            You do not have any friends
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script>
+
+
+$(".UnFriend").click(function() {
+    var username = $(this).attr("id");
+    $.ajax({
+    url: '/ajax/unFriend/',
+    data: {
+      'username': username,
+    },
+    dataType: 'json',
+    success: function (data) {
+        if(data.status=="success")
+        {
+            // alert(username+"DSfs");
+            $("#"+username).parent().parent().remove();
+        }
+        
+    }
+    });
+    
+});
+</script>
+{% endblock %}

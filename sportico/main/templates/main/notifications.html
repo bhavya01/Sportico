@@ -1,0 +1,149 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+
+<div class="card card-3">
+    <div class="title"> 
+        Friend Requests
+    </div>
+    {% if friends %}
+    <div class = "cardContainerClass">
+        <table class='table table-bordered table-hover table-striped display' id='example1'>
+            <thead>
+                <tr>
+                    <th style='width:500px;text-align:center;'>Username</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in friends %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry"><a href="/profile/user/{{ item.uid1.username }}">{{ item.uid1.username }}</a> </td>
+                    <td class ="tableEntry">
+                    <button class = "btn btn-success accept-request friend" id="{{item.uid1.username}}">Accept Request</button>
+                    <button class = "btn btn-danger reject-request friend" id="{{item.uid1.username}}">Reject Request</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:500px;text-align:center;'>Username</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+        <div class="cardContent">
+            There are no friend request pending
+            </div>
+    {% endif %}
+</div>
+
+
+
+<div class="card card-3">
+    <div class="title"> 
+        Notifications
+        {% if userNotifications %}
+            <button class = "btn btn-primary buttonClass pull-right" onclick="clearAllNotifications()"> Clear All </button>
+        {% endif %}
+    </div>
+    {% if userNotifications %}
+    <div class = "cardContainerClass">
+        <table class='table table-bordered table-hover table-striped display' id='example'>
+            <thead>
+                <tr>
+                    <th style='width:500px;text-align:center;'>Notification</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in userNotifications %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.notification }} </td>
+                    <td class ="tableEntry"><button class = "btn btn-default" id="clearNotification" onclick="clearNotification('{{ item.notificationId }}')">Clear
+                    </button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:500px;text-align:center;'>Notification</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+        <div class="cardContent">
+            There are no notifications to be shown
+            </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+$(document).ready(function(){
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+    $(".friend").click(function() {
+        var username = $(this).attr("id");
+
+
+        if($(this).text() == "Accept Request")
+        {   
+            // $(this).parent().remove();
+            
+
+            $.ajax({
+            url: '/ajax/acceptFriendRequest/',
+            data: {
+              'username': username,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.status=="success")
+                {
+                    $("#"+username).parent().append("Accepted Request");
+                    $("#"+username).remove();
+                    $("#"+username).remove();
+                    
+                }
+                
+            }
+            });
+        }
+        else if($(this).text() == "Reject Request")
+        {   
+            $.ajax({
+            url: '/ajax/rejectFriendRequest/',
+            data: {
+              'username': username,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if(data.status=="success")
+                {
+                    $("#"+username).parent().append("Rejected Request");
+                    $("#"+username).remove();
+                    $("#"+username).remove();
+                }
+                
+            }
+            });
+        }
+        
+    });
+});
+
+
+
+</script>
+
+{% endblock %}

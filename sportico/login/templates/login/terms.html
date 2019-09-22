@@ -1,0 +1,51 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="container contentBlock" style="margin-top: 5%;">
+<center><h1>Terms of Service</h1></center>
+<div class="initial">
+<h4>Welcome to Sportico. These Terms of Service ("Terms") govern your access to and use of the services, websites, and applications offered by Sportico (collectively, the "Service"). Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. By accessing or using the Service you agree to be bound by these Terms.<h4>
+</div>
+<br>
+<div class="initial">
+<h4>We may revise these Terms from time to time. The most current version will always be on this page (or such other page as the Service may indicate). If the revision, in Sportico's sole discretion, is material Sportico will notify you via posting to our website. By continuing to access or use the Service after those revisions become effective, you agree to be bound by the revised Terms.</h4>
+</div>
+<br>
+<div class="initial">
+<h4>You may use the Service only if you can form a binding contract with Sportico, and only in compliance with these Terms and all applicable local, state, national, and international laws, rules and regulations. You must provide accurate information, when you create your account on Sportico.</h4>
+</div>
+<br>
+<div class="initial">
+<h4>While Sportico strives to create the most user-friendly and collaborative experience possible, all aspects of the Service are subject to change or elimination at Sportico's sole discretion.
+
+</h4>
+</div>
+</div>
+
+<div id="footer">
+    <nav class="navbar navbar-fixed-bottom navbar-default" id="navbar-footer">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li><a href="/about">About Sportico</a></li>
+                <li><a href="/reason">Common FAQ's</a></li>
+                <li><a href="/privacy">Privacy</a></li>
+                <li><a href="/terms">Terms</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% if user.is_authenticated %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% else %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","none");
+</script>
+{% endif %}
+{% endblock %}
+
+

@@ -1,0 +1,775 @@
+{% extends 'main/base.html' %}
+
+{% block pageSpecificContent %}
+<div class = "addSport">
+    <button class = "btn btn-primary btn-lg buttonClass pull-right" data-toggle="modal" data-target="#addSport"> Add a Sport </button>
+</div>
+
+<br><br>
+
+<div class="card card-3">
+    <div class="title"> 
+        Requests &amp; Invites
+    </div>
+    {% if teamJoiningRequestInvite or doublesReceivedFormationInvite or teamJoiningRequestRequest %}
+        {% if teamJoiningRequestInvite %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Position</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in teamJoiningRequestInvite %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.teamId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.teamId.teamName }}</td>
+                        <td class ="tableEntry"><a href="/profile/user/{{ item.teamId.captainId.username }}">{{ item.teamId.captainId.username }}</a></td>
+                        <td class ="tableEntry">{{ item.position }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptTeamInvite('{{ item.teamId.teamName }}', '{{ item.teamId.sportName.sportName }}', '{{ item.teamId.captainId.username }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectTeamInvite('{{ item.teamId.teamName }}', '{{ item.teamId.sportName.sportName }}', '{{ item.teamId.captainId.username }}')">Reject</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Position</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if teamJoiningRequestRequest %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:100px;text-align:center;'>Player Name</th>
+                        <th style='width:100px;text-align:center;'>Position</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in teamJoiningRequestRequest %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.teamId.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.teamId.teamName }}</td>
+                        <td class ="tableEntry"><a href="/profile/user/{{ item.playerId.username }}">{{ item.playerId.username }}</a></td>
+                        <td class ="tableEntry">{{ item.position }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptJoinTeamRequest('{{ item.teamId.teamName }}', '{{ item.teamId.sportName.sportName }}', '{{ item.playerId.username }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectJoinTeamRequest('{{ item.teamId.teamName }}', '{{ item.teamId.sportName.sportName }}', '{{ item.playerId.username }}')">Reject</button></td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Team Name</th>
+                        <th style='width:100px;text-align:center;'>Player Name</th>
+                        <th style='width:100px;text-align:center;'>Position</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>a
+            </table>
+        </div>
+        {% endif %}
+
+        {% if doublesReceivedFormationInvite %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Sender</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in doublesReceivedFormationInvite %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry"><a href="/profile/user/{{ item.senderId.username }}">{{ item.senderId.username }}</a></td>
+                        <td class ="tableEntry">{% if item.captainId.username == username %} You {% else %} {{ item.captainId.username}} {% endif %}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptDoublesFormation('{{ item.senderId.username }}', '{{ item.sportName.sportName }}', '{{ item.captainId.username }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectDoublesFormation('{{ item.senderId.username }}', '{{ item.sportName.sportName }}', '{{ item.captainId.username }}')">Reject</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:200px;text-align:center;'>Sport</th>
+                        <th style='width:200px;text-align:center;'>Sender</th>
+                        <th style='width:100px;text-align:center;'>Captain</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="cardContent">
+            There are no requests or invites to be shown
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Challenges
+    </div>
+    {% if userReceivedChallenges or doublesReceivedChallenges or teamReceivedChallenges %}
+        <div class = "cardContainerClass">
+            <table class='table table-bordered table-hover table-striped display' id='example'>
+                <thead>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Opponent</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:200px;text-align:center;'>Location</th>
+                        <th style='width:100px;text-align:center;'>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in userReceivedChallenges %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry"><a href="/profile/user/{{ item.playerId1.username }}/">{{ item.playerId1.username }}</a></td>
+                        <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, {{ item.endDate }}</td>
+                        <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptSinglesChallenge('{{ item.playerId1.username }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectSinglesChallenge('{{ item.playerId1.username }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}')">Reject</button>
+                        <button class = "btn btn-danger" id="blacklistButton"  onclick="fillHiddenField('{{ item.playerId1.username }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#userBlacklist">Blacklist</button></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for item in doublesReceivedChallenges %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.doublesId1.teamName }}</td>
+                        <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, {{ item.endDate }}</td>
+                        <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptDoublesChallenge('{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.doublesId1.teamName }}', '{{ item.doublesId2.teamName }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectDoublesChallenge('{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.doublesId1.teamName }}', '{{ item.doublesId2.teamName }}')">Reject</button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectDoublesChallenge('{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.doublesId1.teamName }}', '{{ item.doublesId2.teamName }}')">Blacklist</button>
+                    </tr>
+                    {% endfor %}
+
+                    {% for item in teamReceivedChallenges %}
+                    <tr class='gradeA'>
+                        <td class ="tableEntry">{{ item.teamId1.sportName.sportName }}</td>
+                        <td class ="tableEntry">{{ item.teamId1.teamName }}</td>
+                        <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, {{ item.endDate }}</td>
+                        <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                        <td><button class = "btn btn-success" id="acceptButton" onclick="acceptTeamChallenge('{{ item.teamId1.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.teamId1.teamName }}', '{{ item.teamId2.teamName }}')">Accept
+                        </button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectTeamChallenge('{{ item.teamId1.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.teamId1.teamName }}', '{{ item.teamId2.teamName }}')">Reject</button>
+                        <button class = "btn btn-danger" id="rejectButton" onclick="rejectTeamChallenge('{{ item.teamId1.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}', '{{ item.teamId1.teamName }}', '{{ item.teamId2.teamName }}')">Blacklist</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th style='width:100px;text-align:center;'>Sport</th>
+                        <th style='width:100px;text-align:center;'>Opponent</th>
+                        <th style='width:200px;text-align:center;'>Time</th>
+                        <th style='width:200px;text-align:center;'>Location</th>
+                        <th style='width:300px;text-align:center;'>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% else %}
+        <div class="cardContent">
+            There are no challenges to be shown
+        </div>
+    {% endif %}
+</div>
+
+<div class="card card-3">
+    <div class="title"> 
+        Scheduled Ties
+    </div>
+    {% if userChallenges or userMatching or doublesChallenges or doublesMatching or teamChallengesFirstTeam or teamChallengesSecondTeam or teamMatchingFirstTeam or teamMatchingSecondTeam %} 
+    <div class = "cardContainerClass">
+        <table class='table table-bordered table-hover table-striped display' id='example'>
+            <thead>
+                <tr>
+                    <th style='width:200px;text-align:center;'>Sport</th>
+                    <th style='width:100px;text-align:center;'>Opponent</th>
+                    <th style='width:300px;text-align:center;'>Time</th>
+                    <th style='width:200px;text-align:center;'>Location</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in userChallenges %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                    <td class ="tableEntry">
+                    {% if item.playerId1.username == username %}
+                    	<a href="/profile/user/{{ item.playerId2.username }}">{{ item.playerId2.username }}</a></td><td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td><td class ="tableEntry"><button class = "btn btn-danger cancelChallenge"  onclick="fillHiddenField('{{ item.playerId2.username }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#cancelChallenge">
+    				{% else %}
+    					<a href="{{ item.playerId1.username }}">{{ item.playerId1.username }}</a></td><td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td><td class ="tableEntry"><button class = "btn btn-danger cancelChallenge"  onclick="fillHiddenField('{{ item.playerId1.username }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.endTime }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#cancelChallenge">
+    				{% endif %}
+                    Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in userMatching %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.singlesRequestId1.sportName.sportName }}</td>
+                    <td class ="tableEntry">
+                    {% if item.singlesRequestId1.playerId.username == username %}
+                        <a href="/profile/user/{{ item.singlesRequestId2.playerId.username }}/">{{ item.singlesRequestId2.playerId.username }}</a>
+                    {% else %}
+                        <a href="/profile/user/{{ item.singlesRequestId1.playerId.username }}/">{{ item.singlesRequestId1.playerId.username }}</a>
+                    {% endif %}
+                    </td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelUserMatching"  onclick="fillHiddenFieldMatching('{{ item.singlesRequestId1.singlesRequestId}}', '{{ item.singlesRequestId2.singlesRequestId}}')" data-toggle="modal" data-target="#cancelUserMatching">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in doublesChallenges %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.sportName.sportName }}</td>
+                    <td class ="tableEntry">
+                    {% if item.doublesId1.player1.username == username or item.doublesId1.player2.username == username %}
+                        {{ item.doublesId2.teamName }}
+                    {% else %}
+                        {{ item.doublesId1.teamName }}
+                    {% endif %}
+                    </td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelChallenge"  onclick="fillHiddenFieldTeam('{{ item.doublesId1.doublesId }}', '{{ item.doublesId2.doublesId }}', '{{ item.sportName.sportName }}', '{{ item.startTime }}', '{{ item.startDate }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#cancelChallengeDoubles">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in doublesMatching %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.doublesRequestId1.sportName.sportName }}</td>
+                    <td class ="tableEntry">{{ item.doublesRequestId2.doublesId.teamName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelDoublesMatching"  onclick="fillHiddenFieldMatching('{{ item.doublesRequestId1.doublesRequestId}}', '{{ item.doublesRequestId2.doublesRequestId}}')" data-toggle="modal" data-target="#cancelDoublesMatching">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in teamChallengesFirstTeam %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.teamId1.sportName.sportName }}</td>
+                    <td class ="tableEntry"> {{ item.teamId2.teamName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelChallenge"  onclick="fillHiddenFieldTeam('{{ item.teamId1.teamId }}', '{{ item.teamId2.teamId }}', '{{ item.teamId1.sportName.sportName }}', '{{ item.startTime }}', '{{ item.startDate }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#cancelChallengeTeam">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in teamChallengesSecondTeam %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.teamId1.sportName.sportName }}</td>
+                    <td class ="tableEntry"> {{ item.teamId1.teamName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelChallenge"  onclick="fillHiddenFieldTeam('{{ item.teamId1.teamId }}', '{{ item.teamId2.teamId }}', '{{ item.teamId1.sportName.sportName }}', '{{ item.startTime }}', '{{ item.startDate }}', '{{ item.locationId.locationName }}')" data-toggle="modal" data-target="#cancelChallengeTeam">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in teamMatchingFirstTeam %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.teamRequestId1.teamRequestId.sportName.sportName }}</td> 
+                    <td class ="tableEntry">{{ item.teamRequestId2.teamRequestId.teamName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelTeamMatching"  onclick="fillHiddenFieldMatching('{{ item.teamRequestId1.teamRequestId}}', '{{ item.teamRequestId2.teamRequestId}}')" data-toggle="modal" data-target="#cancelTeamMatching">Cancel</button></td>
+                </tr>
+                {% endfor %}
+
+                {% for item in teamMatchingSecondTeam %}
+                <tr class='gradeA'>
+                    <td class ="tableEntry">{{ item.teamRequestId1.teamId.sportName.sportName }}</td> 
+                    <td class ="tableEntry">{{ item.teamRequestId1.teamId.teamName }}</td>
+                    <td class ="tableEntry">{{ item.startTime }}, {{ item.startDate }} - {{ item.endTime }}, 
+                    {{ item.endDate }}</td>
+                    <td class ="tableEntry">{{ item.locationId.locationName }}</td>
+                    <td class ="tableEntry"><button class = "btn btn-danger cancelTeamMatching"  onclick="fillHiddenFieldMatching('{{ item.teamRequestId1.teamRequestId}}', '{{ item.teamRequestId2.teamRequestId}}')" data-toggle="modal" data-target="#cancelTeamMatching">Cancel</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style='width:200px;text-align:center;'>Sport</th>
+                    <th style='width:100px;text-align:center;'>Opponent</th>
+                    <th style='width:300px;text-align:center;'>Time</th>
+                    <th style='width:200px;text-align:center;'>Location</th>
+                    <th style='width:100px;text-align:center;'>Action</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% else %}
+        <div class="cardContent">
+            There are no scheduled ties to be shown
+        </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="addSport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+  
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalHeader"><strong>ADD SPORT</strong></h4>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="closeModal">Close</button>
+            </div>
+             
+            <div class="modal-body clearfix">
+                <div class="col-sm-12 " align="center">
+                    <div class="form">
+                        <form method="post" action="/registerUserSport/" id="register-user-sport">{% csrf_token %}
+                            <table class="tableForm">
+                                <tr>
+                                    <td class="user-field">{{ sportForm.sportName.label_tag }}</td>
+                                    <td class="user-field">{{ sportForm.sportName }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ sportForm.level.label_tag }}</td>
+                                    <td class="user-field">{{ sportForm.level }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="user-field">{{ sportForm.experience.label_tag }}</td>
+                                    <td class="user-field">{{ sportForm.experience }}</td>
+                                </tr>
+                            </table>
+
+                            <div id = "error-panel">
+                                <span class="error-message">{{ sportForm.non_field_errors }}</span>
+                            </div>
+
+                            <p class="bs-component">
+                                <center>
+                                    <input class="btn btn-success btn-sm" type="submit" value="Add">
+                                </center>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type = "hidden" id="hiddenIdParameter">
+<input type = "hidden" id="hiddenTeamId1Parameter">
+<input type = "hidden" id="hiddenTeamId2Parameter">
+<input type = "hidden" id="hiddenSportNameParameter">
+<input type = "hidden" id="hiddenStartTimeParameter">
+<input type = "hidden" id="hiddenEndTimeParameter">
+<input type = "hidden" id="hiddenStartDateParameter">
+<input type = "hidden" id="hiddenLocationNameParameter">
+<input type = "hidden" id="hiddenMatchingParameter1">
+<input type = "hidden" id="hiddenMatchingParameter2">
+
+<div class="modal fade" id="userBlacklist" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+	<div class="modal-dialog" role="document">
+	    <div class="modal-content">   
+	      
+	        <div class="modal-header">
+	            <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+	            <h6 class="modal-title"><strong><center>This user will not match with you henceforth</center></strong></h6>
+	        </div>
+	         
+	        <div class="modal-body clearfix"> 
+		        <div class="col-sm-12 " align="center">
+		          <button type="button" class="btn btn-success" id="confirmBlacklistUser" data-dismiss="modal" onclick="blacklistUser()">Yes</button>
+		          <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+		          </button>
+		        </div>
+	        </div>
+	    </div>
+	</div>
+</div>
+
+<div class="modal fade" id="cancelChallenge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelChallenge()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelUserMatching" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelSinglesMatching()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelDoublesMatching" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelDoublesMatching()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelChallengeTeam" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelChallengeTeam()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="cancelChallengeDoubles" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelChallengeDoubles()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelTeamMatching" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title"><strong><center>ARE YOU SURE ?</center></strong></h4>
+                <h6 class="modal-title"><strong><center>This match will stand cancelled</center></strong></h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div class="col-sm-12" align="center">
+                  <button type="button" class="btn btn-success" id="confirmCancellation" data-dismiss="modal" onclick="cancelTeamMatching()">Yes</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" style="margin-left:50px;">No
+                  </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fillMatchScores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" name="2" style="top:0px !important; overflow:scroll;">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">   
+          
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalHeader"><strong>Fill Match Scores</strong></h4>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal" id="closeModal">Close</button>
+                <h6 class="modal-title" id="modalSubHeader"> This is essential for finding you better matches </h6>
+            </div>
+            
+            <div class="modal-body clearfix"> 
+                <div align="center">
+                    <table class='table table-bordered table-hover table-striped display' id='example'>
+                        <thead>
+                            <tr>
+                                <th style='width:15%; text-align:center;'>Against</th>
+                                <th style='width:15%; text-align:center;'>Sport</th>
+                                <th style='width:20%; text-align:center;'>Location</th>
+                                <th style='width:5%; text-align:center;' colspan='2'>From</th>                                
+                                <th style='width:5%; text-align:center;' colspan='2'>Till</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for value in singlesResultFormList %}
+                                {% for key, innerValue in value.items %}
+                                    {% if key == 'form' %}
+                                    <form method="post" enctype="multipart/form-data" action="/submitSinglesResult/" class = "submitResultForm" id = "{{innerValue.1}}">{% csrf_token %}
+                                        <div id="formTable">
+                                            <tr id = "{{innerValue.1}}" class="topResultRow" >
+                                                <td> {{ innerValue.0.playerName }} </td>
+                                                <td> {{ innerValue.0.sportName }} </td>
+                                                <td> {{ innerValue.0.locationId }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startTime }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startDate }} </td>
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endTime }} </td>   
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endDate }} </td>
+                                            </tr>
+
+                                            <tr id = "{{innerValue.1}}" class="bottomResultRow">
+                                                <td class="challengeResultRating"> {{ innerValue.0.communityRating.label }} {{ innerValue.0.communityRating }} </td>
+                                                <td class="challengeResultRating"> {{ innerValue.0.level.label }} {{ innerValue.0.level }} </td>
+                                                <td> {{ innerValue.0.matchScore.label }} {{ innerValue.0.matchScore }} </td>
+                                                <td colspan='2' class="challengeResultWinner"> {{ innerValue.0.winner.label }} {{ innerValue.0.winner }} </td>
+                                                <td colspan='2'> <button id = "{{innerValue.1}}" class = "btn btn-success pull-center submitScoreButton"> Submit </button> </td>
+                                                <td style="display:none;"> {{ innerValue.0.resultId }} </td>
+                                                <td style="display:none;"> {{ innerValue.0.username }} </td>
+                                            </tr>
+
+                                            <div id = "error-panel">
+                                                <span class="error-message">{{ innerValue.0.non_field_errors }}</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% for value in doublesResultFormList %} 
+                                {% for key, innerValue in value.items %}
+                                    {% if key == 'form' %}
+                                    <form method="post" enctype="multipart/form-data" action="/submitDoublesResult/" class = "submitResultForm" id = "{{innerValue.1}}" >{% csrf_token %}
+                                        <div id="formTable">
+                                            <tr id = "{{innerValue.1}}" class="topResultRow">
+                                                <td> {{ innerValue.0.teamName }} </td>
+                                                <td> {{ innerValue.0.sportName }} </td>
+                                                <td> {{ innerValue.0.locationId }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startTime }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startDate }} </td>
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endTime }} </td>   
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endDate }} </td>
+                                            </tr>
+
+                                            <tr id = "{{innerValue.1}}" class="bottomResultRow">
+                                                <td class="challengeResultRating"> {{ innerValue.0.communityRating.label }} {{ innerValue.0.communityRating }} </td>
+                                                <td class="challengeResultRating"> {{ innerValue.0.level.label }} {{ innerValue.0.level }} </td>
+                                                <td> {{ innerValue.0.matchScore.label }} {{ innerValue.0.matchScore }} </td>
+                                                <td colspan='2' class="challengeResultWinner"> {{ innerValue.0.winner.label }} {{ innerValue.0.winner }} </td>
+                                                <td colspan='2'> <button id = "{{innerValue.1}}" class = "btn btn-success pull-center submitScoreButton"> Submit </button> </td>
+                                                <td style="display:none;"> {{ innerValue.0.resultId }} </td>
+                                                <td style="display:none;"> {{ innerValue.0.userTeamName }} </td>
+                                            </tr>
+
+                                            <div id = "error-panel">
+                                                <span class="error-message">{{ innerValue.0.non_field_errors }}</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% for value in teamResultFormList %} 
+                                {% for key, innerValue in value.items %}
+                                    {% if key == 'form' %}
+                                    <form method="post" enctype="multipart/form-data" action="/submitTeamResult/" class = "submitResultForm" id = "{{innerValue.1}}">{% csrf_token %}
+                                        <div id="formTable">
+                                            <tr id = "{{innerValue.1}}" class="topResultRow">
+                                                <td> {{ innerValue.0.teamName }} </td>
+                                                <td> {{ innerValue.0.sportName }} </td>
+                                                <td> {{ innerValue.0.locationId }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startTime }} </td>
+                                                <td class="challengeResultStart"> {{ innerValue.0.startDate }} </td>
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endTime }} </td>   
+                                                <td class="challengeResultEnd"> {{ innerValue.0.endDate }} </td>
+                                            </tr>
+
+                                            <tr id = "{{innerValue.1}}" class="bottomResultRow">
+                                                <td class="challengeResultRating"> {{ innerValue.0.communityRating.label }} {{ innerValue.0.communityRating }} </td>
+                                                <td class="challengeResultRating"> {{ innerValue.0.level.label }} {{ innerValue.0.level }} </td>
+                                                <td> {{ innerValue.0.matchScore.label }} {{ innerValue.0.matchScore }} </td>
+                                                <td colspan='2' class="challengeResultWinner"> {{ innerValue.0.winner.label }} {{ innerValue.0.winner }} </td>
+                                                <td colspan='2'> <button id = "{{innerValue.1}}" class = "btn btn-success pull-center submitScoreButton"> Submit </button> </td>
+                                                <td style="display:none;"> {{ innerValue.0.resultId }} </td>
+                                                <td style="display:none;"> {{ innerValue.0.userTeamName }} </td>
+                                            </tr>
+
+                                            <div id = "error-panel">
+                                                <span class="error-message">{{ innerValue.0.non_field_errors }}</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+    var challenges = "{{singlesResultFormList}}";
+    var doublesChallenges = "{{doublesResultFormList}}";
+    var teamChallenges = "{{teamResultFormList}}"
+    if (challenges.length > 2 || doublesChallenges.length > 2 || teamChallenges.length > 2) {
+        $(document).ready(function(){
+            $(window).load(function(){        
+                $('#fillMatchScores').modal('show');
+            });
+        });
+    }
+
+    $(".challengeResultStart").find("#id_startTime").css("width","80px");
+    $(".challengeResultStart").find("#id_startDate").css("width","80px");
+    $(".challengeResultEnd").find("#id_endTime").css("width","80px");
+    $(".challengeResultEnd").find("#id_endDate").css("width","80px");
+    $(".challengeResultRating").find("#id_communityRating").css("width","150px");
+    $(".challengeResultRating").find("#id_level").css("width","130px");
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $('.submitResultForm').submit(function (event) {
+        id=this.id;
+        var data = $(this).serialize();
+        $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: {
+                'formData' : data
+            },
+            success: function (data) {
+                $("#"+id+".topResultRow").remove();
+                $("#"+id+".bottomResultRow").remove();
+            },
+            error: function(data) {
+                console.log("Error");
+            }
+        });
+        return false;
+    });
+
+</script>
+{% endblock %}
+
+
+

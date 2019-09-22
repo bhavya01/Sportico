@@ -1,0 +1,24 @@
+{% extends 'login/base.html' %}
+
+{% block content %}
+<div class="container contentBlock" style="margin-top: 5%;">
+	<h1><center>About</center></h1><br>
+	<p> <h4>Sportico was started by a group of IIT Bombay students with a view to changing how people approach sports. It is meant to bridge the communication gap between different sporting enthusiasts which in turn will improve the performance of the users in the sports. Users can receive constructive feedback from other users through the course of their matches and can thus dynamically change their game plan for the better. </h4></p>
+
+	<p><h4>I sincerely hope Sportico enhances your experience as a sporting enthusiast.</h4></p>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% if user.is_authenticated %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","inline");
+</script>
+{% else %}
+<script>
+    $("ul.nav.navbar-nav.navbar-right").css("display","none");
+</script>
+{% endif %}
+{% endblock %}
+
+
